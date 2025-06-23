@@ -36,13 +36,12 @@ bool CL_ADXL38X::readMultipleRegisters(uint8_t reg, uint16_t size,
   return true;
 }
 
-bool CL_ADXL38X::updateRegisterBits(uint8_t reg, uint8_t mask, uint8_t value) {
+void CL_ADXL38X::updateRegisterBits(uint8_t reg, uint8_t mask, uint8_t value) {
   uint8_t data = 0;
   data = readRegister(reg);
   data &= ~mask;
   data |= _fieldPrepare(mask, value);
   writeRegister(reg, data);
-  return true;
 }
 
 uint8_t CL_ADXL38X::readRegisterBits(uint8_t reg, uint8_t mask) {
@@ -84,30 +83,25 @@ bool CL_ADXL38X::softReset() {
   }
 }
 
-bool CL_ADXL38X::setRange(adxl38x_range range) {
+void CL_ADXL38X::setRange(adxl38x_range range) {
   updateRegisterBits(ADXL38X_OP_MODE, ADXL38X_MASK_RANGE, range);
-  return true;
 }
 
-bool CL_ADXL38X::setOpMode(adxl38x_op_mode mode) {
+void CL_ADXL38X::setOpMode(adxl38x_op_mode mode) {
   updateRegisterBits(ADXL38X_OP_MODE, ADXL38X_MASK_OP_MODE, mode);
   delay(2);
-  return true;
 }
 
-bool CL_ADXL38X::setFilter(uint8_t filter) {
+void CL_ADXL38X::setFilter(uint8_t filter) {
   writeRegister(ADXL38X_FILTER, filter);
-  return true;
 }
 
-bool CL_ADXL38X::setChannel(adxl38x_ch_select ch) {
+void CL_ADXL38X::setChannel(adxl38x_ch_select ch) {
   updateRegisterBits(ADXL38X_DIG_EN, ADXL38X_MASK_CHEN_DIG_EN, ch);
-  return true;
 }
 
-bool CL_ADXL38X::setFIFOEnable(bool enable) {
+void CL_ADXL38X::setFIFOEnable(bool enable) {
   updateRegisterBits(ADXL38X_DIG_EN, ADXL38X_BIT_FIFO_ENABLE, enable);
-  return true;
 }
 
 bool CL_ADXL38X::setFIFO(uint16_t num_samples, bool external_trigger,
@@ -151,6 +145,14 @@ bool CL_ADXL38X::setFIFO(uint16_t num_samples, bool external_trigger,
   return true;
 }
 
+void CL_ADXL38X::setFIFOWaterMarkINT0() {
+  updateRegisterBits(ADXL38X_INT0_MAP0, ADXL38X_BIT_FIFO_WTMK_INT0, 0x01);
+}
+
+void CL_ADXL38X::clearFIFOWaterMark() {
+  updateRegisterBits(ADXL38X_STATUS0, ADXL38X_BIT_FIFO_WARTERMARK, 0x00);
+}
+
 bool CL_ADXL38X::getFIFOWaterMark() {
   return readRegisterBits(ADXL38X_STATUS0, ADXL38X_BIT_FIFO_WARTERMARK);
 }
@@ -163,8 +165,6 @@ uint16_t CL_ADXL38X::getFIFOEntries() {
   uint8_t buf[2];
   uint16_t fifo_entries;
   readMultipleRegisters(ADXL38X_FIFO_STATUS0, 2, buf);
-//   Serial.println(buf[0], HEX);
-//   Serial.println(buf[1], HEX);
   fifo_entries = buf[0] | (buf[1] << 8);
   fifo_entries &= 0x01FF;
   return fifo_entries;

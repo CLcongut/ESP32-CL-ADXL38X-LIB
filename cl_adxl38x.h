@@ -73,6 +73,10 @@ class CL_ADXL38X {
   static constexpr uint8_t ADXL38X_OP_MODE = 0x26;
   static constexpr uint8_t ADXL38X_DIG_EN = 0x27;
   static constexpr uint8_t ADXL38X_REG_RESET = 0x2A;
+  static constexpr uint8_t ADXL38X_INT0_MAP0 = 0x2B;
+  static constexpr uint8_t ADXL38X_INT0_MAP1 = 0x2C;
+  static constexpr uint8_t ADXL38X_INT1_MAP0 = 0x2D;
+  static constexpr uint8_t ADXL38X_INT1_MAP1 = 0x2E;
   static constexpr uint8_t ADXL38X_FIFO_CFG0 = 0x30;
   static constexpr uint8_t ADXL38X_FIFO_CFG1 = 0x31;
   static constexpr uint8_t ADXL38X_FILTER = 0x50;
@@ -89,6 +93,7 @@ class CL_ADXL38X {
   static constexpr uint8_t ADXL38X_BIT_FIFO_WARTERMARK = 0x08;
   static constexpr uint8_t ADXL38X_BIT_FIFO_FULL = 0x02;
   static constexpr uint8_t ADXL38X_BIT_FIFO_ENABLE = 0x08;
+  static constexpr uint8_t ADXL38X_BIT_FIFO_WTMK_INT0 = 0x08;
 
 #ifndef W_DETERMINE
   static constexpr uint8_t W_FILTER_SETTING =
@@ -103,22 +108,24 @@ class CL_ADXL38X {
   uint8_t readRegister(uint8_t reg);
   void writeRegister(uint8_t reg, uint8_t value);
   bool readMultipleRegisters(uint8_t reg, uint16_t size, uint8_t *read_data);
-  bool updateRegisterBits(uint8_t reg, uint8_t mask, uint8_t value);
+  void updateRegisterBits(uint8_t reg, uint8_t mask, uint8_t value);
   uint8_t readRegisterBits(uint8_t reg, uint8_t mask);
   bool init();
   bool softReset();
-  bool setRange(adxl38x_range range);
-  bool setOpMode(adxl38x_op_mode mode);
-  bool setFilter(uint8_t filter);
-  bool setChannel(adxl38x_ch_select ch);
-  bool setFIFOEnable(bool enable);
+  void setRange(adxl38x_range range);
+  void setOpMode(adxl38x_op_mode mode);
+  void setFilter(uint8_t filter);
+  void setChannel(adxl38x_ch_select ch);
+  void setFIFOEnable(bool enable);
   bool setFIFO(uint16_t num_samples, bool external_trigger,
                adxl38x_fifo_mode fifo_mode, bool ch_ID_enable, bool read_reset);
-  bool getDeviceID();
+  void setFIFOWaterMarkINT0();
+  void clearFIFOWaterMark();
+  // bool getDeviceID();
   bool getFIFOWaterMark();
   bool getFIFOFull();
   uint16_t getFIFOEntries();
-  bool getFIFOData(uint8_t* fifo_data, uint16_t size);
+  bool getFIFOData(uint8_t *fifo_data, uint16_t size);
 
  private:
   uint32_t _findFirstSetBit(uint32_t word);
