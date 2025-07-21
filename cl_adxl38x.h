@@ -1,6 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include <SPI.h>
+// #include "ESP32DMASPIMaster.h"
 
 enum adxl38x_range {
   ADXL380_RANGE_4G = 0,
@@ -92,6 +93,7 @@ class CL_ADXL38X {
 
   static constexpr uint8_t ADXL38X_BIT_FIFO_WARTERMARK = 0x08;
   static constexpr uint8_t ADXL38X_BIT_FIFO_FULL = 0x02;
+  static constexpr uint8_t ADXL38X_BIT_FIFO_OVERRUN = 0x04;
   static constexpr uint8_t ADXL38X_BIT_FIFO_ENABLE = 0x08;
   static constexpr uint8_t ADXL38X_BIT_FIFO_WTMK_INT0 = 0x08;
 
@@ -126,6 +128,7 @@ class CL_ADXL38X {
   bool getFIFOFull();
   uint16_t getFIFOEntries();
   bool getFIFOData(uint8_t *fifo_data, uint16_t size);
+  bool getFIFOOverRun();
 
  private:
   uint32_t _findFirstSetBit(uint32_t word);

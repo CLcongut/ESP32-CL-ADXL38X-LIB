@@ -175,6 +175,10 @@ bool CL_ADXL38X::getFIFOData(uint8_t* fifo_data, uint16_t size) {
   return true;
 }
 
+bool CL_ADXL38X::getFIFOOverRun() {
+  return readRegisterBits(ADXL38X_STATUS0, ADXL38X_BIT_FIFO_OVERRUN);
+}
+
 uint32_t CL_ADXL38X::_findFirstSetBit(uint32_t word) {
   uint32_t first_set_bit = 0;
   while (word) {
